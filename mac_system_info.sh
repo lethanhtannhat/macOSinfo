@@ -4,12 +4,6 @@ export LC_ALL=C
 # --- Collect and Process Data ---
 HW=$(system_profiler SPHardwareDataType 2>/dev/null); DF=$(df -k / | tail -n 1)
 
-# Basic Info
-MODEL=$(echo "$HW" | awk -F': ' '/Model Name:/ {print $2}')
-SERIAL=$(echo "$HW" | awk '/Serial Number \(system\):/ {print $4}')
-CHIP=$(sysctl -n machdep.cpu.brand_string); RAM=$(echo "$HW" | awk '/Memory:/ {print $2, $3}')
-USER_TYPE=$(id -Gn "$USER" | grep -q "admin" && echo "Admin" || echo "Standard")
-
 # Storage Calculation (Base 10 GB)
 read TOTAL_B USED_B AVAIL_B <<< $(echo "$DF" | awk '{print $2, $3, $4}'); TOTAL_GB=$(echo "scale=2; $TOTAL_B * 1024 / 1000000000" | bc)
 # Status Checks
@@ -19,10 +13,7 @@ if [ "$AICLOUD_COUNT" -gt 0 ]; then AppleID_STATUS="Signed In"; else AppleID_STA
 
 # --- Build and Display Result ---
 TEXT_OUTPUT=$(cat <<-EOF
-Device Model:           $MODEL
-Chip:                   $CHIP
-Memory (RAM):           $RAM
-Serial Number:          $SERIAL
+$HW
 Storage (Total GB):     ${TOTAL_GB} GB
 FileVault Status:       $FV_STATUS
 Current User:           $USER
