@@ -5,7 +5,7 @@ export LC_ALL=C
 HW=$(system_profiler SPHardwareDataType 2>/dev/null); DF=$(df -k / | tail -n 1)
 
 # Storage Calculation (Base 10 GB)
-read TOTAL_B USED_B AVAIL_B <<< $(echo "$DF" | awk '{print $2, $3, $4}'); TOTAL_GB=$(echo "scale=2; $TOTAL_B * 1024 / 1000000000" | bc)
+read TOTAL_B <<< $(echo "$DF" | awk '{print $2}'); TOTAL_GB=$(echo "scale=2; $TOTAL_B * 1024 / 1000000000" | bc)
 # Status Checks
 FV_STATUS=$(fdesetup status 2>/dev/null | head -n 1 | grep -q "On" && echo "FileVault is On" || echo "FileVault is Off")
 AICLOUD_COUNT=$(defaults read MobileMeAccounts Accounts 2>/dev/null | grep 'AccountID' | wc -l)
